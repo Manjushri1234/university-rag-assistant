@@ -1,10 +1,9 @@
 streamlit
-langchain==0.1.16
-langchain-community==0.0.32
-langchain-groq
+langchain==0.1.14
+langchain-community==0.0.30
+pydantic==1.10.13
 faiss-cpu
-pandas
-python-docx
-pypdf
 sentence-transformers
-openpyxl
+transformers
+huggingface-hub
+python-dotenv
