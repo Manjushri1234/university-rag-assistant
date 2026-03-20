@@ -1,0 +1,10 @@
+streamlit
+langchain==0.1.16
+langchain-community==0.0.32
+langchain-groq
+faiss-cpu
+pandas
+python-docx
+pypdf
+sentence-transformers
+openpyxl
