@@ -4,6 +4,12 @@ from groq import Groq
 
 def get_llm():
     api_key = os.getenv("GROQ_API_KEY")
+
+    print("DEBUG KEY:", api_key)  # 👈 ADD THIS
+
+    if not api_key:
+        raise ValueError("GROQ_API_KEY not found!")
+
     client = Groq(api_key=api_key)
 
     def generate_response(prompt):
