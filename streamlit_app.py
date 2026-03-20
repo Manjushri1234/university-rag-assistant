@@ -1,7 +1,6 @@
 import streamlit as st
-from utils.vectorstore import create_vectorstore, load_vectorstore
+from utils.vectorstore import load_vectorstore
 from models.llm import get_llm
-from utils.rag_pipeline import run_rag
 import os
 
 # -------------------------------
@@ -36,8 +35,7 @@ with st.sidebar:
 
     st.markdown("### 📖 About")
     st.write(
-        "This chatbot uses RAG (Retrieval-Augmented Generation) "
-        "to answer questions from university documents."
+        "This chatbot answers questions from university documents."
     )
 
     st.markdown("### 💡 Sample Questions")
@@ -46,8 +44,6 @@ with st.sidebar:
     st.write("- What is the fee structure?")
     st.write("- Who teaches AI subject?")
     st.write("- What are exam rules?")
-
-    st.markdown("### ⚙️ Options")
 
     if st.button("🧹 Clear Chat"):
         st.session_state.messages = []
@@ -58,9 +54,6 @@ with st.sidebar:
 # -------------------------------
 if "vectorstore" not in st.session_state:
     st.session_state.vectorstore = load_vectorstore()
-
-    if st.session_state.vectorstore is None:
-        st.warning("⚠️ Running in basic mode (no vector database)")
 
 # -------------------------------
 # Load LLM
@@ -86,15 +79,8 @@ if query:
     st.chat_message("user").write(query)
     st.session_state.messages.append({"role": "user", "content": query})
 
-    # -------------------------------
-    # SAFE RAG HANDLING
-    # -------------------------------
-    if st.session_state.vectorstore:
-        answer = run_rag(query, st.session_state.vectorstore, st.session_state.llm)
-    else:
-        # fallback (no vector DB)
-        response = st.session_state.llm(query)
-        answer = response
+    # ✅ FIXED: No .invoke()
+    answer = st.session_state.llm(query)
 
     st.chat_message("assistant").write(answer)
     st.session_state.messages.append({"role": "assistant", "content": answer})
