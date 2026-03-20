@@ -13,15 +13,18 @@ st.set_page_config(
 )
 
 # -------------------------------
-# Header
+# Header (UPDATED)
 # -------------------------------
 st.markdown(
     """
     <h1 style='text-align: center; color: #4CAF50;'>
-    🎓 AI-Powered University Knowledge Assistant
+    🎓 AI-Powered Jain University Information Chatbot
     </h1>
+    <p style='text-align: center; font-size:18px;'>
+    🤖 A Multi-Document RAG-Based AI Assistant
+    </p>
     <p style='text-align: center;'>
-    Ask anything about admissions, courses, fees, exams & more
+    Ask anything about Jain University admissions, courses, fees, exams & more
     </p>
     """,
     unsafe_allow_html=True
@@ -31,11 +34,11 @@ st.markdown(
 # Sidebar
 # -------------------------------
 with st.sidebar:
-    st.title("📌 Menu")
+    st.title("📌 Jain University Assistant")
 
     st.markdown("### 📖 About")
     st.write(
-        "This chatbot answers questions from university documents."
+        "This AI chatbot provides accurate answers using Jain University documents (PDF, Word, Excel) and real-time web search."
     )
 
     st.markdown("### 💡 Sample Questions")
@@ -45,7 +48,7 @@ with st.sidebar:
     st.write("- Who teaches AI subject?")
     st.write("- What are exam rules?")
 
-    # 🔥 NEW: RESPONSE MODE
+    # Response Mode
     st.markdown("### 🧠 Response Mode")
 
     mode = st.radio(
@@ -59,7 +62,7 @@ with st.sidebar:
         st.rerun()
 
 # -------------------------------
-# 🔥 SHOW CURRENT MODE (TOP)
+# Show Mode
 # -------------------------------
 st.markdown(
     f"""
@@ -73,7 +76,7 @@ st.markdown(
 )
 
 # -------------------------------
-# Load Vectorstore (SAFE MODE)
+# Load Vectorstore
 # -------------------------------
 if "vectorstore" not in st.session_state:
     st.session_state.vectorstore = load_vectorstore()
@@ -96,20 +99,22 @@ for msg in st.session_state.messages:
 # -------------------------------
 # User Input
 # -------------------------------
-query = st.chat_input("💬 Ask your question...")
+query = st.chat_input("💬 Ask about Jain University...")
 
 if query:
     st.chat_message("user").write(query)
     st.session_state.messages.append({"role": "user", "content": query})
 
-    # 🔥 NEW: MODE-BASED PROMPT
+    # Mode-based prompt
     if "Concise" in mode:
         final_query = "Give a short, crisp answer in 3-4 points: " + query
     else:
         final_query = "Give a detailed answer with headings, bullet points, and explanation: " + query
 
-    # ✅ LLM call
-    answer = st.session_state.llm(final_query)
+    try:
+        answer = st.session_state.llm(final_query)
+    except Exception as e:
+        answer = "⚠️ Error occurred. Please check API key or try again."
 
     st.chat_message("assistant").write(answer)
     st.session_state.messages.append({"role": "assistant", "content": answer})
