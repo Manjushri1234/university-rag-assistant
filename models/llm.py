@@ -3,7 +3,12 @@ from groq import Groq
 
 
 def get_llm():
-    api_key = st.secrets["GROQ_API_KEY"]   # ✅ correct
+    api_key = st.secrets.get("GROQ_API_KEY")
+
+    st.write("DEBUG KEY:", api_key)  # 👈 IMPORTANT
+
+    if not api_key:
+        raise ValueError("❌ API key not found in secrets")
 
     client = Groq(api_key=api_key)
 
