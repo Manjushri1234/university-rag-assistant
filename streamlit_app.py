@@ -7,7 +7,7 @@ import os
 # Page Config
 # -------------------------------
 st.set_page_config(
-    page_title="University RAG Chatbot",
+    page_title="AI-Powered Jain University Information Chatbot",
     page_icon="🎓",
     layout="wide"
 )
