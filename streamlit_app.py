@@ -45,9 +45,32 @@ with st.sidebar:
     st.write("- Who teaches AI subject?")
     st.write("- What are exam rules?")
 
+    # 🔥 NEW: RESPONSE MODE
+    st.markdown("### 🧠 Response Mode")
+
+    mode = st.radio(
+        "Choose how you want answers:",
+        ["Concise ⚡", "Detailed 📘"],
+        index=1
+    )
+
     if st.button("🧹 Clear Chat"):
         st.session_state.messages = []
         st.rerun()
+
+# -------------------------------
+# 🔥 SHOW CURRENT MODE (TOP)
+# -------------------------------
+st.markdown(
+    f"""
+    <div style='text-align:center; margin-bottom:10px;'>
+        <span style='background-color:#4CAF50; color:white; padding:6px 12px; border-radius:12px;'>
+        Mode: {mode}
+        </span>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # -------------------------------
 # Load Vectorstore (SAFE MODE)
@@ -79,8 +102,14 @@ if query:
     st.chat_message("user").write(query)
     st.session_state.messages.append({"role": "user", "content": query})
 
-    # ✅ FIXED: No .invoke()
-    answer = st.session_state.llm(query)
+    # 🔥 NEW: MODE-BASED PROMPT
+    if "Concise" in mode:
+        final_query = "Give a short, crisp answer in 3-4 points: " + query
+    else:
+        final_query = "Give a detailed answer with headings, bullet points, and explanation: " + query
+
+    # ✅ LLM call
+    answer = st.session_state.llm(final_query)
 
     st.chat_message("assistant").write(answer)
     st.session_state.messages.append({"role": "assistant", "content": answer})
