@@ -1,12 +1,15 @@
-def run_rag(query, vectorstore, llm):
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+def run_rag(query, documents, llm):
+    # Simple keyword-based retrieval
+    relevant_docs = []
 
-    docs = retriever.get_relevant_documents(query)
+    for doc in documents:
+        if query.lower() in doc.page_content.lower():
+            relevant_docs.append(doc.page_content)
 
-    context = "\n".join([doc.page_content for doc in docs])
+    context = "\n".join(relevant_docs[:3])  # top 3 matches
 
     prompt = f"""
-    Answer the question based on the context below.
+    Use the below context to answer the question.
 
     Context:
     {context}
@@ -15,6 +18,4 @@ def run_rag(query, vectorstore, llm):
     {query}
     """
 
-    response = llm.invoke(prompt)
-
-    return response.content
+    return llm(prompt)
