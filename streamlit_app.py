@@ -54,13 +54,13 @@ with st.sidebar:
         st.rerun()
 
 # -------------------------------
-# Load Vectorstore
+# Load Vectorstore (SAFE MODE)
 # -------------------------------
 if "vectorstore" not in st.session_state:
-    if not os.path.exists("faiss_index"):
-        st.session_state.vectorstore = create_vectorstore()
-    else:
-        st.session_state.vectorstore = load_vectorstore()
+    st.session_state.vectorstore = load_vectorstore()
+
+    if st.session_state.vectorstore is None:
+        st.warning("⚠️ Running in basic mode (no vector database)")
 
 # -------------------------------
 # Load LLM
@@ -86,7 +86,15 @@ if query:
     st.chat_message("user").write(query)
     st.session_state.messages.append({"role": "user", "content": query})
 
-    answer = run_rag(query, st.session_state.vectorstore, st.session_state.llm)
+    # -------------------------------
+    # SAFE RAG HANDLING
+    # -------------------------------
+    if st.session_state.vectorstore:
+        answer = run_rag(query, st.session_state.vectorstore, st.session_state.llm)
+    else:
+        # fallback (no vector DB)
+        response = st.session_state.llm.invoke(query)
+        answer = response if isinstance(response, str) else str(response)
 
     st.chat_message("assistant").write(answer)
     st.session_state.messages.append({"role": "assistant", "content": answer})
