@@ -3,7 +3,7 @@ from groq import Groq
 
 
 def get_llm():
-    api_key = st.secrets["GROQ_API_KEY"]  # ✅ FIXED
+    api_key = st.secrets["GROQ_API_KEY"]   # ✅ correct
 
     client = Groq(api_key=api_key)
 
@@ -11,7 +11,7 @@ def get_llm():
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[
-                {"role": "system", "content": "You are a helpful university assistant."},
+                {"role": "system", "content": "You are a helpful assistant"},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.3
