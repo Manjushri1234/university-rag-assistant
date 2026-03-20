@@ -93,8 +93,8 @@ if query:
         answer = run_rag(query, st.session_state.vectorstore, st.session_state.llm)
     else:
         # fallback (no vector DB)
-        response = st.session_state.llm.invoke(query)
-        answer = response if isinstance(response, str) else str(response)
+        response = st.session_state.llm(query)
+        answer = response
 
     st.chat_message("assistant").write(answer)
     st.session_state.messages.append({"role": "assistant", "content": answer})
